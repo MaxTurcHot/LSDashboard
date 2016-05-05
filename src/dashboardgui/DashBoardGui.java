@@ -45,7 +45,6 @@ public class DashBoardGui extends Application {
         MainDash maindash = new MainDash(MainList);
         String AvailableProcessesFile = "/home/max/NetBeansProjects/DashBoardGui/AvailableProcesses.txt";
         maindash.setAvailableprocesses(AvailableProcess.load(AvailableProcessesFile));
-        
         TableView<Line> dasboardtable;
         
 // Name Column
