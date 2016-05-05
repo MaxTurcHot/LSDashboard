@@ -43,15 +43,17 @@ public class DashBoardGui extends Application {
         // Initialize the Main Dash
         ObservableList<Line> MainList = FXCollections.observableArrayList();
         MainDash maindash = new MainDash(MainList);
-        String AvailableProcessesFile = "/home/max/NetBeansProjects/DashBoardGui/AvailableProcesses.txt";
+        //System.out.println();
+        //String AvailableProcessesFile = "/home/max/NetBeansProjects/DashBoardGui/AvailableProcesses.txt";
+        String AvailableProcessesFile = "AvailableProcesses.txt";
         maindash.setAvailableprocesses(AvailableProcess.load(AvailableProcessesFile));
         TableView<Line> dasboardtable;
         
-// Name Column
+        // Name Column
         TableColumn<Line, Boolean> IsActiveLabel = new TableColumn("Is Active");
         IsActiveLabel.setMinWidth(100);
         IsActiveLabel.setCellValueFactory(new PropertyValueFactory<>("IsActive"));
-// Name Column
+        // Name Column
         TableColumn<Line, String> Comments = new TableColumn("Comments");
         Comments.setMinWidth(200);
         Comments.setCellValueFactory(new PropertyValueFactory<>("Comments"));
@@ -69,42 +71,14 @@ public class DashBoardGui extends Application {
         ProcessLabel.setCellValueFactory(new PropertyValueFactory<>("ExLabel"));
         
         // Set Argument Column
-        TableColumn col_action_set = new TableColumn<>("Set Arguments");
-        col_action_set.setMinWidth(200);
-        col_action_set.setSortable(false);
-        
-        // Run Column
-        TableColumn col_action_run = new TableColumn<>("Run");
-        col_action_run.setMinWidth(100);
-        col_action_run.setSortable(false);
-        
-        // Run Column
-        TableColumn col_action_del = new TableColumn<>("Delete");
-        col_action_del.setMinWidth(100);
-        col_action_del.setSortable(false);
-        
-        
-        col_action_set.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Line, Boolean>, ObservableValue<Boolean>>() {
- 
-            @Override
-            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Line, Boolean> p) {
-                return new SimpleBooleanProperty(p.getValue() != null);
-            }
-        });
-        col_action_set.setCellFactory(
-                new Callback<TableColumn<Line, Boolean>, TableCell<Line, Boolean>>() {
- 
-            @Override
-            public TableCell<Line, Boolean> call(TableColumn<Line, Boolean> p) {
-                return new ButtonCell();
-            }
-         
-        });
+        TableColumn ArgNum = new TableColumn<>("Argument #");
+        ArgNum.setMinWidth(100);
+        ArgNum.setCellValueFactory(new PropertyValueFactory<>("ArgumentNo"));
         
         dasboardtable = new TableView<>();
         dasboardtable.setItems(maindash.getDashprocesses());
         dasboardtable.setEditable(true);
-        dasboardtable.getColumns().addAll(IsActiveLabel, Comments, ThreadID, DelayLabel, ProcessLabel, col_action_set, col_action_run, col_action_del);
+        dasboardtable.getColumns().addAll(IsActiveLabel, Comments, ThreadID, DelayLabel, ProcessLabel, ArgNum);
         // All button here
         Button loadprojectbutton = new Button();
         loadprojectbutton.setText("Load Project Dash");
@@ -112,6 +86,13 @@ public class DashBoardGui extends Application {
         addlinebutton.setText("Add Process Line");
         Button saveprojectbutton = new Button();
         saveprojectbutton.setText("Save Project Dash");
+        //
+        Button setargumentbutton = new Button();
+        setargumentbutton.setText("Set Arguments");
+        Button runlinebutton = new Button();
+        runlinebutton.setText("Run Process(es)");
+        Button deletelinebutton = new Button();
+        deletelinebutton.setText("Delete Process(es)");
         
         
         loadprojectbutton.setOnAction(e -> {
@@ -133,6 +114,9 @@ public class DashBoardGui extends Application {
         mainlayout.add(addlinebutton, 0, 0);
         mainlayout.add(loadprojectbutton, 1, 0);
         mainlayout.add(saveprojectbutton, 2, 0);
+        mainlayout.add(setargumentbutton, 4, 0);
+        mainlayout.add(runlinebutton, 5, 0);
+        mainlayout.add(deletelinebutton, 6, 0);
         mainlayout.add(dasboardtable,0 ,1, 10, 12);
         Scene mainwindow = new Scene(mainlayout, 1200, 400);
         
@@ -163,19 +147,5 @@ public class DashBoardGui extends Application {
     ((TableColumn)(table.getColumns().get(i))).setVisible(true);
     }
 }
-    private class ButtonCell extends TableCell<Line, Boolean> {
-        final Button cellButton = new Button("Action");
-         
-        ButtonCell(){
-             
-            cellButton.setOnAction(new EventHandler<ActionEvent>(){
- 
-                @Override
-                public void handle(ActionEvent t) {
-                    // do something when button clicked
-                    System.out.println("asx");
-                }
-            });
-        }
-}
+    
 }
