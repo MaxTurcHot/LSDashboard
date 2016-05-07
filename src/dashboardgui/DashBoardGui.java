@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import batchtool.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -48,12 +49,12 @@ import javax.swing.ListSelectionModel;
  * @author max
  */
 public class DashBoardGui extends Application {
-    
+
     @Override
     public void start(Stage primaryStage) {
-        
+
         Stage window;
-        
+
         // Initialize the Main Dash
         ObservableList<Line> MainList = FXCollections.observableArrayList();
         MainDash maindash = new MainDash(MainList);
@@ -63,12 +64,9 @@ public class DashBoardGui extends Application {
         maindash.setAvailableprocesses(AvailableProcess.load(AvailableProcessesFile));
         TableView<Line> dasboardtable;
 
-        
         ////////////////////////////////////////
         /////// COLUMN DEFINITION //////////////
         ////////////////////////////////////////
-        
-        
         // Is Active Column
         TableColumn<Line, String> IsActiveLabel = new TableColumn("Is Active");
         IsActiveLabel.setMinWidth(100);
@@ -79,17 +77,16 @@ public class DashBoardGui extends Application {
             @Override
             public void handle(CellEditEvent<Line, String> t) {
                 //
-                List<String> istrue = Arrays.asList("TRUE","True","true","1","on","ON","active");
-                List<String> isfalse = Arrays.asList("FALSE","False","false","0","OFF","off","inactive");
+                List<String> istrue = Arrays.asList("TRUE", "True", "true", "1", "on", "ON", "active");
+                List<String> isfalse = Arrays.asList("FALSE", "False", "false", "0", "OFF", "off", "inactive");
                 boolean containedtrue = istrue.contains(t.getNewValue());
                 boolean containedfalse = isfalse.contains(t.getNewValue());
                 if (containedtrue) {
                     ((Line) t.getTableView().getItems().get(t.getTablePosition().getRow())).setIsActive("TRUE");
-                }
-                else if (containedfalse) {
+                } else if (containedfalse) {
                     ((Line) t.getTableView().getItems().get(t.getTablePosition().getRow())).setIsActive("FALSE");
                 }
-                
+
                 //
             }
         }
@@ -146,7 +143,7 @@ public class DashBoardGui extends Application {
         ProcessLabel.setMinWidth(200);
         //ProcessLabel.
         ProcessLabel.setCellValueFactory(new PropertyValueFactory<>("ExLabel"));
-        
+
         // Set Argument Column
         TableColumn ArgNum = new TableColumn<>("Argument #");
         ArgNum.setMinWidth(100);
@@ -159,65 +156,69 @@ public class DashBoardGui extends Application {
         dasboardtable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         dasboardtable.getColumns().addAll(IsActiveLabel, Comments, ThreadID, DelayLabel, ProcessLabel, ArgNum);
         //dasboardtable.getColumns().addAll(IsActiveLabel, Comments, ThreadID, ProcessLabel, ArgNum);
-        // All button here
+        
+
+
+
+
+        ////////////////////////////////////////
+        /////// Button DEFINITION //////////////
+        ////////////////////////////////////////
         Button loadprojectbutton = new Button();
         loadprojectbutton.setText("Load Project Dash");
+        loadprojectbutton.setMinWidth(150);
         Button addlinebutton = new Button();
-        addlinebutton.setText("Add Process Line");
+        addlinebutton.setText("Add Process");
+        addlinebutton.setMinWidth(150);
+        Button clonelinebutton = new Button();
+        clonelinebutton.setText("Clone Process(es)");
+        clonelinebutton.setMinWidth(150);
         Button saveprojectbutton = new Button();
         saveprojectbutton.setText("Save Project Dash");
+        saveprojectbutton.setMinWidth(150);
         //
         Button setargumentbutton = new Button();
         setargumentbutton.setText("Set Arguments");
+        setargumentbutton.setMinWidth(150);
         Button runlinebutton = new Button();
         runlinebutton.setText("Run Process(es)");
+        runlinebutton.setMinWidth(150);
         Button deletelinebutton = new Button();
         deletelinebutton.setText("Delete Process(es)");
+        deletelinebutton.setMinWidth(150);
+        Button batchbutton = new Button();
+        batchbutton.setText("Batch run");
+        batchbutton.setMinWidth(150);
+        
+        
+        ////////////////////////////////////////
+        /////// Action On Button  //////////////
+        ////////////////////////////////////////
+
+        deletelinebutton.setOnAction(e -> {
+            // Get index of lines to remove
+            List<Integer> indexlist = new ArrayList<Integer>();
+            for (Line l:dasboardtable.getSelectionModel().getSelectedItems()) {
+                indexlist.add(maindash.getDashprocesses().indexOf(l));   
+            }
+            // remove the lines at reverse (reverse is useless finnaly)
+            for (int i = indexlist.size() - 1; i > -1; i--) {
+                System.out.println(i + ":" + indexlist.get(i));
+                maindash.removeline(maindash.getDashprocesses().get(indexlist.get(i)));
+            }
+        });
         
         addlinebutton.setOnAction(e -> {
-            
-            ObservableList<String> availablechoices = FXCollections.observableArrayList();
-            for (Line l:maindash.getAvailableprocesses()) {
-                availablechoices.add(l.getExLabel());
-            }
-            
-            GridPane sublayout = new GridPane();
-            sublayout.setVgap(5);
-            sublayout.setHgap(5);
-            Button acceptselection = new Button();
-            acceptselection.setText("ok");
-            acceptselection.setMinWidth(200);
-            
-            
-            ChoiceBox cb = new ChoiceBox();
-            cb.setItems(availablechoices);
-            cb.getSelectionModel().selectFirst();
-            sublayout.add(cb, 0 ,0);
-            sublayout.add(acceptselection, 0 ,1);
-            Scene subscene = new Scene(sublayout, 200, 60);
-            Stage subwindow = new Stage();
-            subwindow.setScene(subscene);
-            subwindow.setTitle("Select Process");
-            subwindow.show();
-            
+            Line line = SelectProcess.window(maindash.getAvailableprocesses());
+            maindash.addline(line);
+            //System.out.println("ici rdio");
+        });
 
-            acceptselection.setOnAction(f -> {
-                String selection = cb.getSelectionModel().getSelectedItem().toString();
-                for (Line l:maindash.getAvailableprocesses()) {
-                    if (l.getExLabel().equals(selection)) {
-                        System.out.println("found");
-                        maindash.addline(l);
-                        break;
-                    }
-                }
-                subwindow.close();
-            //refresh_table(dasboardtable);
+        clonelinebutton.setOnAction(e -> {
+            for (Line l:dasboardtable.getSelectionModel().getSelectedItems()) {
+                maindash.addline(l.clone());
+            }
         });
-            //refresh_table(dasboardtable);
-        });
-        
-        
-        
         
         loadprojectbutton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
@@ -229,89 +230,39 @@ public class DashBoardGui extends Application {
             //refresh_table(dasboardtable);
         });
         
+        saveprojectbutton.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Project Dash");
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("csv file (*.csv)", "*.csv");
+            fileChooser.getExtensionFilters().add(extFilter);
+            File file = fileChooser.showSaveDialog(new Stage());
+            Dash.save(file.getAbsolutePath(), maindash.getDashprocesses());
+        });
+
         setargumentbutton.setOnAction(e -> {
-            //dasboardtable.getSelectionModel().getSelectedItems();
-            //for (Line l:dasboardtable.getSelectionModel().getSelectedItems()) {
-             //   l.print();
-            //}
-            
-            
             // If selection is unique
             if (dasboardtable.getSelectionModel().getSelectedItems().size() == 1) {
-
                 Line lineitem = dasboardtable.getSelectionModel().getSelectedItem();
-                // Arguments label
-                TableColumn<Argument, String> Arg1 = new TableColumn("Arguments");
-                Arg1.setMinWidth(200);
-                //Arg1.setEditable(true);
-                Arg1.setCellValueFactory(new PropertyValueFactory<>("datalabel"));
-                
-                // Arguments value
-                TableColumn<Argument, String> Argvalue = new TableColumn("Value");
-                Argvalue.setMinWidth(500);
-                Argvalue.setEditable(true);
-                Argvalue.setCellValueFactory(new PropertyValueFactory<>("data"));
-                Argvalue.setCellFactory(TextFieldTableCell.forTableColumn());
-                Argvalue.setOnEditCommit(new EventHandler<CellEditEvent<Argument, String>>() {
-                    @Override
-                    public void handle(CellEditEvent<Argument, String> t) {
-                        //
-                        ((Argument) t.getTableView().getItems().get(t.getTablePosition().getRow())).setData(t.getNewValue());
-                        //
-                    }
-                }
-                );
-
-                //   Table view setting here
-                TableView<Argument> argtable = new TableView<>();
-                argtable.setItems(lineitem.getListofArgument());
-                argtable.setEditable(true);
-                argtable.setMinHeight(100);
-                argtable.getColumns().addAll(Arg1, Argvalue);
-
-                //
-                Button ArgSelector = new Button();
-                ArgSelector.setText("Select");
-                ArgSelector.setOnAction(f -> {
-                    // Need to call specific argument selector here
-                    if (argtable.getSelectionModel().getSelectedItems().size() == 1) {
-                        Argument arg = argtable.getSelectionModel().getSelectedItem();
-                        System.out.println("Selector \"" + arg.getData());
-                    }
-                    
-                });
-
-                
-                
-                GridPane sublayout = new GridPane();
-                sublayout.setVgap(5);
-                sublayout.setHgap(5);
-                Scene subscene = new Scene(sublayout, 720, 420);
-                Stage subwindow = new Stage();
-                subwindow.setScene(subscene);
-                subwindow.setTitle("Argument Setting for " + dasboardtable.getSelectionModel().getSelectedItem().getComments());
-                sublayout.add(argtable,0 ,1, 3, 3);
-                sublayout.add(ArgSelector, 1 ,0);
-                subwindow.showAndWait();
-                
-                
+                SetArgument.window(lineitem);
             }
         });
-        
+
         GridPane mainlayout = new GridPane();
         mainlayout.setPadding(new Insets(10, 10, 10, 10));
         mainlayout.setMinSize(300, 300);
         mainlayout.setVgap(5);
         mainlayout.setHgap(5);
         mainlayout.add(addlinebutton, 0, 0);
+        mainlayout.add(clonelinebutton, 0, 1);
         mainlayout.add(loadprojectbutton, 1, 0);
-        mainlayout.add(saveprojectbutton, 2, 0);
-        mainlayout.add(setargumentbutton, 4, 0);
-        mainlayout.add(runlinebutton, 5, 0);
-        mainlayout.add(deletelinebutton, 6, 0);
-        mainlayout.add(dasboardtable,0 ,1, 10, 12);
+        mainlayout.add(saveprojectbutton, 1, 1);
+        mainlayout.add(setargumentbutton, 2, 1);
+        mainlayout.add(deletelinebutton, 3, 1);
+        mainlayout.add(runlinebutton, 4, 1);
+        mainlayout.add(batchbutton, 4, 0);
+        mainlayout.add(dasboardtable, 0, 2, 10, 12);
         Scene mainwindow = new Scene(mainlayout, 850, 400);
-        
+
         // Maximize window size here
         //Screen screen = Screen.getPrimary();
         //Rectangle2D bounds = screen.getVisualBounds();
@@ -329,15 +280,15 @@ public class DashBoardGui extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+
         launch(args);
     }
-    
-    public static void refresh_table(TableView table){
+
+    public static void refresh_table(TableView table) {
         for (int i = 0; i < table.getColumns().size(); i++) {
-    ((TableColumn)(table.getColumns().get(i))).setVisible(false);
-    ((TableColumn)(table.getColumns().get(i))).setVisible(true);
+            ((TableColumn) (table.getColumns().get(i))).setVisible(false);
+            ((TableColumn) (table.getColumns().get(i))).setVisible(true);
+        }
     }
-}
-    
+
 }
