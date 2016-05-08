@@ -35,6 +35,7 @@ import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 //import javafx.stage.FileChooser.ExtensionFilter;
@@ -54,6 +55,7 @@ public class DashBoardGui extends Application {
     public void start(Stage primaryStage) {
 
         Stage window;
+        
 
         // Initialize the Main Dash
         ObservableList<Line> MainList = FXCollections.observableArrayList();
@@ -82,9 +84,9 @@ public class DashBoardGui extends Application {
                 boolean containedtrue = istrue.contains(t.getNewValue());
                 boolean containedfalse = isfalse.contains(t.getNewValue());
                 if (containedtrue) {
-                    ((Line) t.getTableView().getItems().get(t.getTablePosition().getRow())).setIsActive("TRUE");
+                    ((Line) t.getTableView().getItems().get(t.getTablePosition().getRow())).setIsActive("true");
                 } else if (containedfalse) {
-                    ((Line) t.getTableView().getItems().get(t.getTablePosition().getRow())).setIsActive("FALSE");
+                    ((Line) t.getTableView().getItems().get(t.getTablePosition().getRow())).setIsActive("false");
                 }
 
                 //
@@ -222,7 +224,7 @@ public class DashBoardGui extends Application {
         
         loadprojectbutton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Load Project Dash");
+            fileChooser.setTitle("LSD - Load Project Dash");
             File file = fileChooser.showOpenDialog(new Stage());
             ObservableList<Line> arraylist = Dash.load(file.getAbsolutePath(), maindash.getAvailableprocesses());
             maindash.setDashprocesses(arraylist);
@@ -232,7 +234,7 @@ public class DashBoardGui extends Application {
         
         saveprojectbutton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Save Project Dash");
+            fileChooser.setTitle("LSD - Save Project Dash");
             FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("csv file (*.csv)", "*.csv");
             fileChooser.getExtensionFilters().add(extFilter);
             File file = fileChooser.showSaveDialog(new Stage());
@@ -247,6 +249,12 @@ public class DashBoardGui extends Application {
             }
         });
 
+        runlinebutton.setOnAction(e -> {
+            for (Line l:dasboardtable.getSelectionModel().getSelectedItems()) {
+                l.execute();
+            }
+        });
+        
         GridPane mainlayout = new GridPane();
         mainlayout.setPadding(new Insets(10, 10, 10, 10));
         mainlayout.setMinSize(300, 300);
@@ -273,6 +281,7 @@ public class DashBoardGui extends Application {
         window = primaryStage;
         window.setTitle("Linux Structural Dashboard");
         window.setScene(mainwindow);
+        window.getIcons().add(new Image("file:Dashboard.png"));
         window.show();
     }
 
