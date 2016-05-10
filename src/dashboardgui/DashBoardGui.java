@@ -12,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 //import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import batchtool.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,16 +26,19 @@ import javafx.collections.ObservableList;
 import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 //import javafx.geometry.Rectangle2D;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 //import javafx.stage.FileChooser.ExtensionFilter;
 //import javafx.stage.Screen;
@@ -55,8 +57,9 @@ public class DashBoardGui extends Application {
     public void start(Stage primaryStage) {
 
         Stage window;
-        
 
+        Image dashboardimage = new Image("file:Dashboard.png");
+        
         // Initialize the Main Dash
         ObservableList<Line> MainList = FXCollections.observableArrayList();
         MainDash maindash = new MainDash(MainList);
@@ -66,12 +69,21 @@ public class DashBoardGui extends Application {
         maindash.setAvailableprocesses(AvailableProcess.load(AvailableProcessesFile));
         TableView<Line> dasboardtable;
 
+        // Base Path setting //
+        //String BasePath= System.getProperty("user.dir");
+        Label basepathlabel = new Label("Project Base Path:");
+        basepathlabel.setMinWidth(150);
+        TextField basepathfield = new TextField();
+        basepathfield.setMinWidth(400);
+        // Set initial value to PWD
+        basepathfield.setText(maindash.getBasePath());
+
         ////////////////////////////////////////
         /////// COLUMN DEFINITION //////////////
         ////////////////////////////////////////
         // Is Active Column
-        TableColumn<Line, String> IsActiveLabel = new TableColumn("Is Active");
-        IsActiveLabel.setMinWidth(100);
+        TableColumn<Line, String> IsActiveLabel = new TableColumn("Active");
+        IsActiveLabel.setMinWidth(60);
         IsActiveLabel.setEditable(true);
         IsActiveLabel.setCellValueFactory(new PropertyValueFactory<>("IsActive"));
         IsActiveLabel.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -95,7 +107,7 @@ public class DashBoardGui extends Application {
         );
         // Comments Column
         TableColumn<Line, String> Comments = new TableColumn("Comments");
-        Comments.setMinWidth(200);
+        Comments.setMinWidth(210);
         Comments.setEditable(true);
         Comments.setCellValueFactory(new PropertyValueFactory<>("Comments"));
         Comments.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -109,8 +121,8 @@ public class DashBoardGui extends Application {
         }
         );
         //ThreadID
-        TableColumn<Line, String> ThreadID = new TableColumn("Thread ID");
-        ThreadID.setMinWidth(100);
+        TableColumn<Line, String> ThreadID = new TableColumn("Thread");
+        ThreadID.setMinWidth(80);
         ThreadID.setEditable(true);
         ThreadID.setCellValueFactory(new PropertyValueFactory<>("ThreadID"));
         ThreadID.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -155,13 +167,10 @@ public class DashBoardGui extends Application {
         dasboardtable = new TableView<>();
         dasboardtable.setItems(maindash.getDashprocesses());
         dasboardtable.setEditable(true);
+        dasboardtable.setPrefHeight(800);
         dasboardtable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         dasboardtable.getColumns().addAll(IsActiveLabel, Comments, ThreadID, DelayLabel, ProcessLabel, ArgNum);
         //dasboardtable.getColumns().addAll(IsActiveLabel, Comments, ThreadID, ProcessLabel, ArgNum);
-        
-
-
-
 
         ////////////////////////////////////////
         /////// Button DEFINITION //////////////
@@ -191,85 +200,99 @@ public class DashBoardGui extends Application {
         Button batchbutton = new Button();
         batchbutton.setText("Batch run");
         batchbutton.setMinWidth(150);
-        
-        
+        Button basepathselection = new Button();
+        basepathselection.setText("Select Base Path");
+        basepathselection.setMinWidth(150);
+
         ////////////////////////////////////////
         /////// Action On Button  //////////////
         ////////////////////////////////////////
-
         deletelinebutton.setOnAction(e -> {
             // Get index of lines to remove
             List<Integer> indexlist = new ArrayList<Integer>();
-            for (Line l:dasboardtable.getSelectionModel().getSelectedItems()) {
-                indexlist.add(maindash.getDashprocesses().indexOf(l));   
+            for (Line l : dasboardtable.getSelectionModel().getSelectedItems()) {
+                indexlist.add(maindash.getDashprocesses().indexOf(l));
             }
             // remove the lines at reverse (reverse is useless finnaly)
             for (int i = indexlist.size() - 1; i > -1; i--) {
-                System.out.println(i + ":" + indexlist.get(i));
                 maindash.removeline(maindash.getDashprocesses().get(indexlist.get(i)));
             }
         });
-        
+
         addlinebutton.setOnAction(e -> {
-            Line line = SelectProcess.window(maindash.getAvailableprocesses());
+            Line line = SelectProcess.window(maindash.getAvailableprocesses(), dashboardimage);
             maindash.addline(line);
             //System.out.println("ici rdio");
         });
 
         clonelinebutton.setOnAction(e -> {
-            for (Line l:dasboardtable.getSelectionModel().getSelectedItems()) {
+            for (Line l : dasboardtable.getSelectionModel().getSelectedItems()) {
                 maindash.addline(l.clone());
             }
         });
-        
+
         loadprojectbutton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("LSD - Load Project Dash");
             File file = fileChooser.showOpenDialog(new Stage());
-            ObservableList<Line> arraylist = Dash.load(file.getAbsolutePath(), maindash.getAvailableprocesses());
-            maindash.setDashprocesses(arraylist);
+            Dash.load(file.getAbsolutePath(), maindash);
             dasboardtable.setItems(maindash.getDashprocesses());
-            //refresh_table(dasboardtable);
+            // Need to set Base Path
+            basepathfield.setText(maindash.getBasePath());
         });
-        
+
         saveprojectbutton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("LSD - Save Project Dash");
             FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("csv file (*.csv)", "*.csv");
             fileChooser.getExtensionFilters().add(extFilter);
             File file = fileChooser.showSaveDialog(new Stage());
-            Dash.save(file.getAbsolutePath(), maindash.getDashprocesses());
+            Dash.save(file.getAbsolutePath(), maindash.getDashprocesses(), maindash.getBasePath());
         });
 
         setargumentbutton.setOnAction(e -> {
             // If selection is unique
             if (dasboardtable.getSelectionModel().getSelectedItems().size() == 1) {
                 Line lineitem = dasboardtable.getSelectionModel().getSelectedItem();
-                SetArgument.window(lineitem);
+                SetArgument.window(lineitem, dashboardimage, maindash.getBasePath());
             }
         });
 
         runlinebutton.setOnAction(e -> {
-            for (Line l:dasboardtable.getSelectionModel().getSelectedItems()) {
+            for (Line l : dasboardtable.getSelectionModel().getSelectedItems()) {
                 l.execute();
             }
         });
-        
+
+        basepathselection.setOnAction(e -> {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setTitle("LSD - Directory Selector");
+            File file = directoryChooser.showDialog(new Stage());
+            // Change the maindash basepath
+            maindash.setBasePath(file.getAbsolutePath());
+            // change field display
+            basepathfield.setText(file.getAbsolutePath());
+        });
+
         GridPane mainlayout = new GridPane();
         mainlayout.setPadding(new Insets(10, 10, 10, 10));
         mainlayout.setMinSize(300, 300);
         mainlayout.setVgap(5);
         mainlayout.setHgap(5);
-        mainlayout.add(addlinebutton, 0, 0);
-        mainlayout.add(clonelinebutton, 0, 1);
-        mainlayout.add(loadprojectbutton, 1, 0);
-        mainlayout.add(saveprojectbutton, 1, 1);
-        mainlayout.add(setargumentbutton, 2, 1);
-        mainlayout.add(deletelinebutton, 3, 1);
-        mainlayout.add(runlinebutton, 4, 1);
-        mainlayout.add(batchbutton, 4, 0);
-        mainlayout.add(dasboardtable, 0, 2, 10, 12);
-        Scene mainwindow = new Scene(mainlayout, 850, 400);
+        mainlayout.add(basepathlabel, 0, 0);
+        mainlayout.add(basepathfield, 1, 0, 3, 1);
+        //basepathselection
+        mainlayout.add(basepathselection, 4, 0);
+        mainlayout.add(addlinebutton, 0, 1);
+        mainlayout.add(clonelinebutton, 0, 2);
+        mainlayout.add(loadprojectbutton, 1, 1);
+        mainlayout.add(saveprojectbutton, 1, 2);
+        mainlayout.add(setargumentbutton, 2, 2);
+        mainlayout.add(deletelinebutton, 3, 2);
+        mainlayout.add(runlinebutton, 4, 2);
+        mainlayout.add(batchbutton, 4, 1);
+        mainlayout.add(dasboardtable, 0, 3, 5, 1);
+        Scene mainwindow = new Scene(mainlayout, 790, 600);
 
         // Maximize window size here
         //Screen screen = Screen.getPrimary();
@@ -281,7 +304,7 @@ public class DashBoardGui extends Application {
         window = primaryStage;
         window.setTitle("Linux Structural Dashboard");
         window.setScene(mainwindow);
-        window.getIcons().add(new Image("file:Dashboard.png"));
+        window.getIcons().add(dashboardimage);
         window.show();
     }
 
