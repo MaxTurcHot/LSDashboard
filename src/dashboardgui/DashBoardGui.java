@@ -6,30 +6,19 @@
 package dashboardgui;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-//import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-//import java.util.ArrayList;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventType;
 import javafx.geometry.Insets;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
-//import javafx.geometry.Rectangle2D;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
@@ -40,12 +29,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-//import javafx.stage.FileChooser.ExtensionFilter;
-//import javafx.stage.Screen;
-import javafx.util.Callback;
 import javafx.util.converter.DoubleStringConverter;
-import javafx.util.converter.NumberStringConverter;
-import javax.swing.ListSelectionModel;
 
 /**
  *
@@ -194,6 +178,8 @@ public class DashBoardGui extends Application {
         Button runlinebutton = new Button();
         runlinebutton.setText("Run Process(es)");
         runlinebutton.setMinWidth(150);
+        Button validatelinebutton = new Button();
+        validatelinebutton.setText("Validate Process(es)");
         Button deletelinebutton = new Button();
         deletelinebutton.setText("Delete Process(es)");
         deletelinebutton.setMinWidth(150);
@@ -204,6 +190,12 @@ public class DashBoardGui extends Application {
         basepathselection.setText("Select Base Path");
         basepathselection.setMinWidth(150);
 
+        ////////////////////////////////////////
+        /////// Action On Test field ///////////
+        ////////////////////////////////////////
+        basepathfield.setOnAction(e -> {
+            maindash.setBasePath(basepathfield.getText());
+        });
         ////////////////////////////////////////
         /////// Action On Button  //////////////
         ////////////////////////////////////////
@@ -219,6 +211,13 @@ public class DashBoardGui extends Application {
             }
         });
 
+        validatelinebutton.setOnAction(e -> {
+            for (Line l : dasboardtable.getSelectionModel().getSelectedItems()) {
+                l.valid(maindash.getBasePath());
+            }
+            //System.out.println("ici rdio");
+        });
+        
         addlinebutton.setOnAction(e -> {
             Line line = SelectProcess.window(maindash.getAvailableprocesses(), dashboardimage);
             maindash.addline(line);
@@ -260,7 +259,7 @@ public class DashBoardGui extends Application {
 
         runlinebutton.setOnAction(e -> {
             for (Line l : dasboardtable.getSelectionModel().getSelectedItems()) {
-                l.execute();
+                l.execute(maindash.getBasePath());
             }
         });
 
@@ -288,6 +287,7 @@ public class DashBoardGui extends Application {
         mainlayout.add(loadprojectbutton, 1, 1);
         mainlayout.add(saveprojectbutton, 1, 2);
         mainlayout.add(setargumentbutton, 2, 2);
+        mainlayout.add(validatelinebutton, 3, 1);
         mainlayout.add(deletelinebutton, 3, 2);
         mainlayout.add(runlinebutton, 4, 2);
         mainlayout.add(batchbutton, 4, 1);
