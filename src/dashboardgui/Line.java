@@ -94,7 +94,12 @@ public class Line {
     }
 
     public void execute(String basepath, WindowsLinux winlin) {
-        TerminalLauncher.ex(generatecommandlines(basepath, winlin));
+        if (winlin.isLinux()) {
+            TerminalLauncher.exLinux(generatecommandlines(basepath, winlin));
+        }
+        else {
+            TerminalLauncher.exWindows(generatecommandlines(basepath, winlin), winlin);
+        }
     }
 
     public String dryrun(String basepath, WindowsLinux winlin) {
