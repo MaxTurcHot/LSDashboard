@@ -1,6 +1,8 @@
 package dashboardgui;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,7 +20,6 @@ public class Line {
     private String ThreadID;
     private ObservableList<Argument> ListofArgument;
     private String Comments;
-    private String IsActive = "true";
     private int ArgumentNo;
 
     public int getArgumentNo() {
@@ -85,20 +86,32 @@ public class Line {
         Comments = comments;
     }
 
-    public String isIsActive() {
-        return IsActive;
-    }
-
-    public void setIsActive(String isActive) {
-        IsActive = isActive;
-    }
-
-    public void execute(String basepath, WindowsLinux winlin) {
-        if (winlin.isLinux()) {
-            TerminalLauncher.exLinux(generatecommandlines(basepath, winlin));
+    public void write(String basepath, WindowsLinux winlin, Boolean batch) {
+        String filename;
+        String pathstring;
+            if (winlin.isLinux()) {
+                pathstring = "bashfiles";
+            }
+            else {
+                pathstring = winlin.getLindir() + File.separator + "bashfiles";
+            }
+        if (batch) {
+            filename = pathstring + File.separator + ThreadID + "_lsd.bash";
         }
         else {
-            TerminalLauncher.exWindows(generatecommandlines(basepath, winlin), winlin);
+            filename = pathstring + File.separator + "_" + ThreadID + "_lsd.bash";
+        }
+        
+        
+        try {
+            PrintWriter writer = new PrintWriter(filename, "UTF-8");
+            for (String line : generatecommandlines(basepath, winlin)) {
+                writer.print(line + "\n");
+            }
+            writer.close();
+        }
+        catch (IOException e){
+            e.printStackTrace();
         }
     }
 
@@ -113,7 +126,6 @@ public class Line {
 
     public void print() {
         System.out.println("Comment: " + Comments);
-        System.out.println("Is Active: " + IsActive);
         System.out.println("Thread ID: " + ThreadID);
         System.out.println("Delay: " + Delay + " sec");
         System.out.println("Executable type: " + ExLabel);
@@ -133,7 +145,6 @@ public class Line {
         ClonedLine.setDelay(this.Delay);
         ClonedLine.setExLabel(this.ExLabel);
         ClonedLine.setExPath(this.ExPath);
-        ClonedLine.setIsActive(this.IsActive);
         ClonedLine.setThreadID(this.ThreadID);
         ObservableList<Argument> ListofArgument = FXCollections.observableArrayList();
         for (Argument arg : this.ListofArgument) {
@@ -186,6 +197,7 @@ public class Line {
             File executablefile = new File(WindowsLinux.converttowin(winlin, this.getExPath()));
             resultstring += executablefile.exists() + " -> Bash Script: " + executablefile.getAbsoluteFile() + "\n";
         }
+        resultstring += !this.getThreadID().contains("_") + "-> ThreadID: " + this.getThreadID() + "\n";
         for (Argument arg : this.ListofArgument) {
             resultstring += arg.valid(basepath) + " -> " + arg.getDatalabel() + " (" + arg.getStyle() + "): " + arg.getData() + "\n";
         }
@@ -217,9 +229,10 @@ public class Line {
 
     private ArrayList<String> generatecommandlines(String basepath, WindowsLinux winlin) {
         ArrayList<String> ExecutionLines = new ArrayList<String>();
-        ExecutionLines.add("#!/bin/sh");
+        //ExecutionLines.add("#!/bin/sh");
+        String commandstring = "";
         if (Delay != 0) {
-            ExecutionLines.add("sleep " + Delay);
+            commandstring += "sleep " + Delay.intValue() + ";";
         }
         String Args = "";
         for (Argument arg : ListofArgument) {
@@ -229,7 +242,8 @@ public class Line {
             }
             Args += argstring;
         }
-        ExecutionLines.add("bash " + ExPath + Args);
+        commandstring += "bash " + ExPath + Args;
+        ExecutionLines.add(commandstring);
         return ExecutionLines;
     }
 }
