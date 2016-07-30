@@ -3,12 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/max/NetBeansProjects/DashBoardGui/src/dashboardgui/AvailableProcess.java</file>
-            <file>file:/home/max/NetBeansProjects/DashBoardGui/src/batchtool/Line.java</file>
-            <file>file:/home/max/NetBeansProjects/DashBoardGui/src/batchtool/Dash.java</file>
-            <file>file:/home/max/NetBeansProjects/DashBoardGui/src/batchtool/Controller.java</file>
-            <file>file:/home/max/NetBeansProjects/DashBoardGui/src/dashboardgui/DashBoardGui.java</file>
-            <file>file:/home/max/NetBeansProjects/DashBoardGui/src/dashboardgui/MainDash.java</file>
+            <file>file:/home/max/Dropbox/LinuxStructuralDashboard/src/dashboardgui/MainDash.java</file>
+            <file>file:/home/max/Dropbox/LinuxStructuralDashboard/src/dashboardgui/DashBoardGui.java</file>
+            <file>file:/home/max/Dropbox/LinuxStructuralDashboard/src/dashboardgui/SetArgument.java</file>
+            <file>file:/home/max/Dropbox/LinuxStructuralDashboard/src/dashboardgui/AvailableProcess.java</file>
+            <file>file:/home/max/Dropbox/LinuxStructuralDashboard/src/dashboardgui/WindowsLinux.java</file>
+            <file>file:/home/max/Dropbox/LinuxStructuralDashboard/src/dashboardgui/Dash.java</file>
+            <file>file:/home/max/Dropbox/LinuxStructuralDashboard/src/dashboardgui/Line.java</file>
+            <file>file:/home/max/Dropbox/LinuxStructuralDashboard/src/dashboardgui/TerminalLauncher.java</file>
+            <file>file:/home/max/Dropbox/LinuxStructuralDashboard/src/dashboardgui/PathManipulator.java</file>
+            <file>file:/home/max/Dropbox/LinuxStructuralDashboard/src/dashboardgui/SelectProcess.java</file>
         </group>
     </open-files>
 </project-private>

@@ -5,12 +5,6 @@
  */
 package dashboardgui;
 
-import batchtool.ArgBool;
-import batchtool.ArgFile;
-import batchtool.ArgPath;
-import batchtool.ArgString;
-import batchtool.Argument;
-import batchtool.Line;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +23,6 @@ import javafx.collections.ObservableList;
 public class AvailableProcess {
 
     public static ObservableList<Line> load(String allowablefile) {
-        System.out.println(allowablefile);
         ObservableList<Line> alist = FXCollections.observableArrayList();
         // import allowable csv file here
         Path file = Paths.get(allowablefile);
@@ -55,10 +48,9 @@ public class AvailableProcess {
                 //System.out.println(line);
                 Line newLine = new Line();
                 newLine.setComments("Comments");
-                newLine.setDelay(0);
+                newLine.setDelay(0.0);
                 newLine.setExLabel(field[0]);
                 newLine.setExPath(field[1]);
-                newLine.setIsActive(true);
                 newLine.setThreadID("0");
                 //int argumentNo = (field.length - 2) / 2;
                 ObservableList<Argument> ListofArgument = FXCollections.observableArrayList();
@@ -99,5 +91,41 @@ public class AvailableProcess {
             System.err.println(x);
         }
         return alist;
+    }
+
+    public static void loaddefault(MainDash dash, String defaultfile) {
+        Path file = Paths.get(defaultfile);
+        try (InputStream in = Files.newInputStream(file);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                
+                // Specify the comment caractere #
+                if (line.startsWith("#")) {
+                    continue;
+                }
+                // Split the line with ','
+                String[] field = line.split(",");
+                // Look if Process is available
+                for (Line l: dash.getAvailableprocesses()) {
+                    if (field[0].equals(l.getExLabel())) {
+                        // get mimimum between default argument quantity and available process argument quantity
+                        int len;
+                        if (field.length-1 < l.getArgumentNo()) {
+                            len = field.length-1;
+                        }
+                        else {
+                            len = l.getArgumentNo();
+                        }
+                        for (int i = 0; i < len; i++) {
+                            l.getListofArgument().get(i).setData(field[i+1]);
+                        }
+                        break;
+                    }
+                }
+            }
+        } catch (IOException x) {
+            System.err.println(x);
+        }
     }
 }

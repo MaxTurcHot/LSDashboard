@@ -11,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -29,21 +31,22 @@ public class Dash {
             // field[0] = Process Label
             // field[1] = comment
             // field[2] = Thread ID
-            // field[3] = Process Executable Path
-            // field[4] = Delay
+            // field[3] = Delay
+            // field[4] = Relative Mode
             // field[5] = Argument01
             // field[6] = Argument02
             // field[7] = Argument03
 
             bw.write("# first line is the absolute base path of the project\n");
             bw.write(BasePath + "\n");
-            bw.write("# Process Label, Comment, Thread ID, shell script path, Delay (sec), ArgLabel01, ArgType01, ArgLabel02, ArgType02, ..." + "\n");
+            bw.write("# Process Label, Comment, Thread ID, Delay (sec), Relative mode,ArgLabel01, ArgType01, ArgLabel02, ArgType02, ..." + "\n");
             for (Line l : lines) {
                 String content = l.getExLabel() + ",";
                 content += l.getComments() + ",";
                 content += l.getThreadID() + ",";
-                content += l.getExPath() + ",";
+                //content += l.getExPath() + ",";
                 content += l.getDelay() + ",";
+                content += l.isRelativeMode() + ",";
                 for (int i = 0; i < l.getListofArgument().size(); i++) {
                     content += l.getListofArgument().get(i).getData() + ",";
                 }
@@ -78,14 +81,14 @@ public class Dash {
                 }
                 Line newLine = new Line();
                 // Split the line with ','
-            // field[0] = Process Label
-            // field[1] = comment
-            // field[2] = Thread ID
-            // field[3] = Process Executable Path
-            // field[4] = Delay
-            // field[5] = Argument01
-            // field[6] = Argument02
-            // field[7] = Argument03
+                // field[0] = Process Label
+                // field[1] = comment
+                // field[2] = Thread ID
+                // field[3] = Delay
+                // field[4] = Relative Mode
+                // field[5] = Argument01
+                // field[6] = Argument02
+                // field[7] = Argument03
                 String[] field = line.split(",");
                 Boolean exist = false;
                 Boolean argmatch = false;
@@ -108,10 +111,12 @@ public class Dash {
                     //System.out.println("exist and argument match");
                     //  Process found, we can import the line in the dashboard
                     newLine.setComments(field[1]);
-                    newLine.setDelay(Double.parseDouble(field[4]));
+                    newLine.setDelay(Double.parseDouble(field[3]));
                     newLine.setExLabel(field[0]);
-                    newLine.setExPath(field[3]);
+                    //newLine.setExPath(field[3]);
                     newLine.setThreadID(field[2]);
+                    newLine.setRelativeMode(Boolean.valueOf(field[4]));
+                    //newLine.setRelativeMode(field[4]);
                     // Go thru all arguments and populate argument object
                     for (int i = 5; i < field.length; i++) {
                         newLine.getListofArgument().get(i - 5).setData(field[i]);

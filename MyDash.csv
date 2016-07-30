@@ -1,4 +1,4 @@
-# Process Label, Is Active (true or false), Comment, Thread ID, Process Executable Path, Delay (sec), Argument01, Argument02, Argument ...
-WebBrowser,true,My Firefox to desjardins,1.0.1,/home/max/Documents/firefox.sh,5,/home/max/Documents,www.desjardins.com,dummy,
-WebBrowser,true,My Firefox to gmail,1.1,/home/max/Documents/firefox.sh,3,/home/max/Documents,www.gmail.com,hhhhhahaaaaa,
-Nastran,true,Open Libreoffice,1.2,/home/max/Documents/nastran.sh,6,/home/max/Documents,/home/max/Documents/JavaSoft/BatchController/MyDash.csv,,
+# first line is the absolute base path of the project
+/home/max/Documents
+# Process Label, Comment, Thread ID, shell script path, Delay (sec), ArgLabel01, ArgType01, ArgLabel02, ArgType02, ...
+WebBrowser,gmail,A,0.0,www.gmail.com,

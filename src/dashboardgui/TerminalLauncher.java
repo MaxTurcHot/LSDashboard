@@ -1,42 +1,42 @@
 package dashboardgui;
 
 import java.io.*;
-//import java.util.*;
-import java.util.ArrayList;
 
 public class TerminalLauncher {
 
-    public static void exLinux(ArrayList<String> command) {
+    public static void exLinux() {
 
         try {
-            PrintWriter writer = new PrintWriter("executionfile.sh", "UTF-8");
-            for (String line : command) {
-                writer.println(line);
-                //System.out.println(line);
-            }
-            writer.close();
+            
             @SuppressWarnings("unused")
-            Process p = Runtime.getRuntime().exec("bash executionfile.sh");
+            Process p = Runtime.getRuntime().exec("bash executionfile.bash");
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
-    public static void exWindows(ArrayList<String> command, WindowsLinux winlin) {
+    public static void exWindows(WindowsLinux winlin) {
 
         try {
-            
-            PrintWriter writer = new PrintWriter(winlin.getWindir() +  File.separator +"executionfile.sh", "UTF-8");
-            for (String line : command) {
-                writer.println(line + "\n");
-            }
-            writer.close();
+            WindowsLinux.copyxsfile(winlin);
             @SuppressWarnings("unused")
-            Process p = Runtime.getRuntime().exec(winlin.getWinexe());
-            //
+            Process p = Runtime.getRuntime().exec("cmd /c execution.xs");
         } catch (IOException e) {
             // TODO Auto-generated catch block
+            System.out.println(e.toString());
             e.printStackTrace();
         }
-    }   
+    }
+    public static void directoryWindows(String path) {
+
+        try {
+            @SuppressWarnings("unused")
+            Process p = Runtime.getRuntime().exec("cmd /c explorer " + path);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            System.out.println(e.toString());
+            e.printStackTrace();
+        }
+    }
+    
 }

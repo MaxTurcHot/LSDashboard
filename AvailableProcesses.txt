@@ -1,12 +1,12 @@
-# Commented line
-# Process Label, shell script path, ArgLabel01, ArgType01, ArgLabel02, ArgType02, ...
-Nastran,/home/Downloads/command/nastran.sh,Run Path,path,Nastran dat file,file, JobName, string
-Stress Processor,/home/Downloads/command/stress.sh,Run Path,path, Stress Input File, file, Output File Name, string, OP2 File, file
-Force Processor,/home/Downloads/command/forceprocessor.sh,Run Path,path,Sort Type (3),string,Subcases (all),string,elf1.dat Input File,file,Format (1) binary, string,Nastran Result File,file,elf2.dat Output File Name,string,Save file to NEUTRAL file ? (y),string,elf3.dat Output File Name,string,Title,string
-Random Stress Processor,/home/Downloads/command/randomstress.sh, Run Path,path, Converted Stress File, file, Stress Input File, file, Output File Name, string
-Random Stress Converter, /home/Downloads/command/randomstressconvert.sh, Run Path,path, Maya Stress File, file, Output File Prefix, string
-Random Force Converter, /home/Downloads/command/randomforceconvert.sh, Run Path,path, Maya Force File, file, Output File Prefix, string
-Random Processor, /home/Downloads/command/random.sh,Run Path,path,Maya Random Input File,file,OP2 File, file,Output Directory,path
-Maya Modal Summary,/home/Downloads/command/mayamodal.sh,Run Path,path,Maya modal inp file,file,op2 file,file,output Directory,path
-WebBrowser,/home/max/Documents/firefox.sh,ExecutePath,path,File2Open,file,comment,string, Is Sine ?, string
-Custom Directory Tool,/home/Downloads/command/DirTool.sh,ExecutePath,path
+# Commented line,,,,,,,,,,,,,,,,,,,,,
+# Process Label, shell script path, ArgLabel01, ArgType01, ArgLabel02, ArgType02, ...,,,,,,,,,,,,,,,
+Nastran,/home/max/Downloads/command/nastran.sh,Run Path,path,Nastran dat file,file,JobName,string,,,,,,,,,,,,,,
+Stress Processor,/home/max/Downloads/command/stress.sh,Run Path,path,Stress Input File,file,Output File Name,string,OP2 File,file,,,,,,,,,,,,
+Force Processor,/home/max/Downloads/command/forceprocessor.sh,Run Path,path,Sort Type (3),string,Subcases (all),string,elf1.dat Input File,file,Format (1) binary, string,Nastran Result File,file,elf2.dat Output File Name,string,Save file to NEUTRAL file ? (y),string,elf3.dat Output File Name,string,Title,string
+Random Stress Processor,/home/max/Downloads/command/randomstress.sh,Run Path,path,Converted Stress File,file,Stress Input File,file,Output File Name,string,,,,,,,,,,,,
+Random Stress Converter,/home/max/Downloads/command/randomstressconvert.sh, Run Path,path, Maya Stress File,file, Output File Prefix,string,,,,,,,,,,,,,,
+Random Force Converter,/home/max/Downloads/command/randomforceconvert.sh, Run Path,path, Maya Force File,file,Output File Prefix,string,,,,,,,,,,,,,,
+Random Processor,/home/max/Downloads/command/random.sh,RunPath,path,MayaRandomInputFile,file,OP2File,file,OutputDirectory,path,,,,,,,,,,,,
+Maya Modal Summary,/home/max/Downloads/command/mayamodal.sh,Run Path,path,Maya modal inp file,file,op2 file,file,Output Directory,path,,,,,,,,,,,,
+WebBrowser,/home/max/Documents/firefox.sh,Web Address,string,,,,,,,,,,,,,,,,,,
+Custom Directory Tool,/home/max/Downloads/command/DirTool.sh,ExecutePath,path,,,,,,,,,,,,,,,,,,
