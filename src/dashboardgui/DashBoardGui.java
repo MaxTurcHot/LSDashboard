@@ -397,56 +397,69 @@ public class DashBoardGui extends Application {
         });
 
         runlinebutton.setOnAction(e -> {
-            // Need to clean up directory first
-            String pathstring;
-            if (winlin.isLinux()) {
-                pathstring = "bashfiles";
-            } else {
-                pathstring = winlin.getLsdpath() + File.separator + "bashfiles";
-            }
-            File f = new File(pathstring);
-            if (f.isDirectory()) {
-                File[] files = f.listFiles();
-                for (File file : files) {
-                    file.delete();
+            if (areThreadOk(dasboardtable.getSelectionModel().getSelectedItems())){
+
+                // Need to clean up directory first
+                String pathstring;
+                if (winlin.isLinux()) {
+                    pathstring = "bashfiles";
+                } else {
+                    pathstring = winlin.getLsdpath() + File.separator + "bashfiles";
                 }
-            } else {
-                f.mkdir();
+                File f = new File(pathstring);
+                if (f.isDirectory()) {
+                    File[] files = f.listFiles();
+                    for (File file : files) {
+                        file.delete();
+                    }
+                } else {
+                    f.mkdir();
+                }
+                for (Line l : dasboardtable.getSelectionModel().getSelectedItems()) {
+                    l.write(maindash.getBasePath(), winlin, false);
+                }
+                if (winlin.isLinux()) {
+                    TerminalLauncher.exLinux();
+                } else {
+                    TerminalLauncher.exWindows(winlin);
+                }
             }
-            for (Line l : dasboardtable.getSelectionModel().getSelectedItems()) {
-                l.write(maindash.getBasePath(), winlin, false);
+            else {
+                MessageBox.show("Error","Operation can't complete", "Selected Thread must be different");
             }
-            if (winlin.isLinux()) {
-                TerminalLauncher.exLinux();
-            } else {
-                TerminalLauncher.exWindows(winlin);
-            }
+
         });
         batchbutton.setOnAction(e -> {
-            // Need to clean up directory first
-            String pathstring;
-            if (winlin.isLinux()) {
-                pathstring = "bashfiles";
-            } else {
-                pathstring = winlin.getLsdpath() + File.separator + "bashfiles";
-            }
-            File f = new File(pathstring);
-            if (f.isDirectory()) {
-                File[] files = f.listFiles();
-                for (File file : files) {
-                    file.delete();
+            if (areThreadOk(dasboardtable.getSelectionModel().getSelectedItems())){
+                // Need to clean up directory first
+                String pathstring;
+                if (winlin.isLinux()) {
+                    pathstring = "bashfiles";
+                } else {
+                    pathstring = winlin.getLsdpath() + File.separator + "bashfiles";
                 }
-            } else {
-                f.mkdir();
+                File f = new File(pathstring);
+                if (f.isDirectory()) {
+                    File[] files = f.listFiles();
+                    for (File file : files) {
+                        file.delete();
+                    }
+                } else {
+                    f.mkdir();
+                }
+                for (Line l : dasboardtable.getSelectionModel().getSelectedItems()) {
+                    l.write(maindash.getBasePath(), winlin, true);
+                }
+                if (winlin.isLinux()) {
+                    TerminalLauncher.exLinux();
+                } else {
+                    TerminalLauncher.exWindows(winlin);
+                }
             }
-            for (Line l : dasboardtable.getSelectionModel().getSelectedItems()) {
-                l.write(maindash.getBasePath(), winlin, true);
+            else {
+                MessageBox.show("Error","Operation can't complete", "Selected Thread must be different");
             }
-            if (winlin.isLinux()) {
-                TerminalLauncher.exLinux();
-            } else {
-                TerminalLauncher.exWindows(winlin);
-            }
+
         });
 
         basepathselection.setOnAction(e -> {
@@ -496,10 +509,29 @@ public class DashBoardGui extends Application {
         primaryStage.setMaxWidth(800);
         //primaryStage.setHeight(bounds.getHeight());
         window = primaryStage;
-        window.setTitle("Linux Structural Dashboard 0.0.6");
+        window.setTitle("Linux Structural Dashboard 0.0.7");
         window.setScene(mainwindow);
         window.getIcons().add(dashboardimage);
         window.show();
+    }
+
+    private boolean areThreadOk(ObservableList<Line> selectedItems) {
+        if (selectedItems.size() == 0) {
+
+            return true;
+        }
+        else {
+            for (int i = 0; i < selectedItems.size(); i++) {
+                for (int j = i + 1; j < selectedItems.size(); j++) {
+
+                    if (selectedItems.get(i).getThreadID().equals(selectedItems.get(j).getThreadID())) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        //return false;
     }
 
     /**

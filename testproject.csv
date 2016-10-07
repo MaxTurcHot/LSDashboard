@@ -1,0 +1,4 @@
+# first line is the absolute base path of the project
+/home/max/Documents/JavaSoft
+# Process Label, Is Active, Comment, Thread ID, shell script path, Delay (sec) ArgLabel01, ArgType01, ArgLabel02, ArgType02, ...
+Nastran,true,Comments,0,/home/max/Downloads/command/nastran.sh,0.0,LinuxStructuralDashboard/dist,LinuxStructuralDashboard/MyDash4.csv,myjobbody,

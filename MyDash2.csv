@@ -1,0 +1,6 @@
+# first line is the absolute base path of the project
+/home/max/Documents
+# Process Label, Comment, Thread ID, Delay (sec), ArgLabel01, ArgType01, ArgLabel02, ArgType02, ...
+WebBrowser,gmail,A,0.0,www.gmail.com,
+Random Stress Converter,sdv,SDF,0.0,Default value,Default value,Default value,
+Random Stress Converter,dfdsffff,FRD,0.0,Python,nastran.sh,gchn,

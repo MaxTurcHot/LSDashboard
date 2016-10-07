@@ -1,0 +1,10 @@
+# Windows mapped directory
+C:\Users\maxim\Documents\mappedfolder
+# Linux Mapped directory
+# C:\Users\maxim\Documents\linuxmappeddummy
+/watson/user3/mturcott
+# Executable to copy
+C:\Users\maxim\Desktop\executionfile.xs
+# Windows equivalence of LSDPATH
+C:\Users\maxim\Documents
+
