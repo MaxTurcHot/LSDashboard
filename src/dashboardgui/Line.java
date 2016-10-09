@@ -26,6 +26,16 @@ public class Line {
     private int ArgumentNo;
     private boolean relativeMode = false;
 
+    private int status = 0;
+
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
     public boolean isRelativeMode() {
         return relativeMode;
     }
