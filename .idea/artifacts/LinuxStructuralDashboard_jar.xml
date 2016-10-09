@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="LinuxStructuralDashboard:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/LinuxStructuralDashboard_jar</output-path>
+    <root id="archive" name="LinuxStructuralDashboard.jar">
+      <element id="module-output" name="LinuxStructuralDashboard" />
+    </root>
+  </artifact>
+</component>
