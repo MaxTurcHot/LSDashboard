@@ -37,7 +37,14 @@ public class ArgFile extends Argument {
         File basepathfile = new File(basepath);
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("LSD - File Selector");
-        fileChooser.setInitialDirectory(basepathfile);
+        if (basepathfile.exists())
+        {
+            fileChooser.setInitialDirectory(basepathfile);
+        }
+        else
+        {
+            MessageBox.show("Warning", "IO warning","Base path doesn't exist");
+        }
         File file = fileChooser.showOpenDialog(new Stage());
         String relativepath = PathManipulator.relative(basepathfile, file);
         this.setData(relativepath);

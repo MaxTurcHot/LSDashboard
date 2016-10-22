@@ -1,5 +1,5 @@
 # first line is the absolute base path of the project
-/home/max/Dropbox/LinuxStructuralDashboard
+/home/maxime/Dropbox,,,,,,,,,,,,
 # Process Label, Comment, Thread ID, Delay (sec), Relative mode,ArgLabel01, ArgType01, ArgLabel02, ArgType02, ...
 Force Processor,ASssss,0,0.0,true,test,3,all,executionfile.bash,gtest.csv,fbd,y,rtg,rtgr,
 Force Processor,BBBBddd,0,0.0,false,test,3,all,executionfile.bash,gtest.csv,fbd,y,rtg,rtgr,

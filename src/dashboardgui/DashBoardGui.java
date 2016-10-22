@@ -360,7 +360,14 @@ public class DashBoardGui extends Application {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("LSD - Load Project Dash");
             File fini = new File(maindash.getBasePath());
-            fileChooser.setInitialDirectory(fini);
+            if (fini.exists())
+                {
+                    fileChooser.setInitialDirectory(fini);
+                }
+            else
+                {
+                    MessageBox.show("Warning", "IO warning","Base path doesn't exist");
+                }
             File file = fileChooser.showOpenDialog(new Stage());
             Dash.load(file.getAbsolutePath(), maindash);
             dasboardtable.setItems(maindash.getDashprocesses());
@@ -457,7 +464,14 @@ public class DashBoardGui extends Application {
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("LSD - Directory Selector");
             File fini = new File(maindash.getBasePath());
-            directoryChooser.setInitialDirectory(fini);
+            if (fini.exists())
+            {
+                directoryChooser.setInitialDirectory(fini);
+            }
+            else
+            {
+                MessageBox.show("Warning", "IO warning","Base path doesn't exist");
+            }
             File file = directoryChooser.showDialog(new Stage());
             // Change the maindash basepath
             maindash.setBasePath(file.getAbsolutePath());
@@ -500,7 +514,7 @@ public class DashBoardGui extends Application {
         primaryStage.setMaxWidth(800);
         //primaryStage.setHeight(bounds.getHeight());
         window = primaryStage;
-        window.setTitle("Linux Structural Dashboard 0.0.7");
+        window.setTitle("Linux Structural Dashboard 0.0.8");
         window.setScene(mainwindow);
         window.getIcons().add(dashboardimage);
         window.show();

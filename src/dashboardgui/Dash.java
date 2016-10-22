@@ -77,7 +77,9 @@ public class Dash {
                 }
                 j++;
                 if (j == 1) {
-                    maindash.setBasePath(line);
+                    String[] field = line.split(",");
+
+                    maindash.setBasePath(field[0]);
                 }
                 Line newLine = new Line();
                 // Split the line with ','
